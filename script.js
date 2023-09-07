@@ -1,4 +1,4 @@
-const tickLength = 128
+const tickLength = 150
 const appleMargin = 0
 const columns = 35
 let rows
@@ -34,18 +34,18 @@ function initializeGame() {
 }
 
 function detectKeyPress() {
-    document.addEventListener("keypress", function (event) {
+    document.addEventListener("keydown", function (event) {
 
-        if (event.key.toLowerCase() === "w" && direction != 3) {
+        if ((event.key.toLowerCase() === "w" || event.key === "ArrowUp") && direction != 3) {
             tempDirection = 1
         }
-        else if (event.key.toLowerCase() === "a" && direction != 4) {
+        else if ((event.key.toLowerCase() === "a" || event.key === "ArrowLeft") && direction != 4) {
             tempDirection = 2
         }
-        else if (event.key.toLowerCase() === "s" && direction != 1) {
+        else if ((event.key.toLowerCase() === "s" || event.key === "ArrowDown") && direction != 1) {
             tempDirection = 3
         }
-        else if (event.key.toLowerCase() === "d" && direction != 2) {
+        else if ((event.key.toLowerCase() === "d" || event.key === "ArrowRight") && direction != 2) {
             tempDirection = 4
         }
     })
