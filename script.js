@@ -66,7 +66,7 @@ function update() {
     checkForApple()
     updatePos();
     checkForEnd()
-    requestAnimationFrame(drawFrame())
+    requestAnimationFrame(drawFrame)
 }
 
 function checkForEnd() {
