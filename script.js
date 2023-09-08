@@ -10,14 +10,19 @@ let snakeCoordinates = []
 let pxPerSquare
 let tailIndex = 1
 
+let canvas
+let ctx
 
 document.addEventListener("DOMContentLoaded", function () {
+    canvas = document.querySelector('canvas')
+    ctx = canvas.getContext('2d')
 
-    mainCanvas.width = window.innerWidth
-    mainCanvas.height = window.innerHeight
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
 
-    pxPerSquare = mainCanvas.width / columns
-    rows = Math.floor(mainCanvas.height / pxPerSquare)
+    pxPerSquare = canvas.width / columns
+    rows = Math.floor(canvas.height / pxPerSquare)
+
 
     initializeGame();
 
@@ -52,7 +57,6 @@ function detectKeyPress() {
 }
 
 function tick() {
-
     update();
 }
 
@@ -62,7 +66,7 @@ function update() {
     checkForApple()
     updatePos();
     checkForEnd()
-    drawFrame()
+    requestAnimationFrame(drawFrame())
 }
 
 function checkForEnd() {
@@ -170,19 +174,12 @@ function drawFrame() {
 }
 
 function drawScore() {
-    const canvas = document.getElementById("mainCanvas");
-    const ctx = canvas.getContext("2d");
-
     ctx.font = "64px 'copperplate', Fantasy";
     ctx.fillStyle = "white";
     ctx.fillText("Score :   " + score, 30, 80);
 }
 
 function drawStrokeRect() {
-
-    let canvas = document.getElementById("mainCanvas")
-    let ctx = canvas.getContext("2d")
-
     let line = 4
     ctx.lineWidth = line
     ctx.strokeStyle = "mediumslateblue"
@@ -190,22 +187,16 @@ function drawStrokeRect() {
 }
 
 function drawSquare(color, pos, appleMargin) {
-
     var x = pxPerSquare * pos[0] + appleMargin;
     var y = pxPerSquare * pos[1] + appleMargin;
     var width = pxPerSquare - appleMargin * 2 + 1;
     var height = pxPerSquare - appleMargin * 2 + 1;
-
-    let canvas = document.getElementById("mainCanvas")
-    let ctx = canvas.getContext("2d")
 
     ctx.fillStyle = color
     ctx.fillRect(x, y, width, height);
 }
 
 function clearCanvas() {
-    var canvas = document.getElementById("mainCanvas");
-    var ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
 }
 
