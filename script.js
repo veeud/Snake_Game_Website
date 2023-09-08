@@ -197,7 +197,7 @@ function drawSquare(color, pos, appleMargin) {
 }
 
 function clearCanvas() {
-    ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function getNewApplePos() {
