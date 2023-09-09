@@ -1,18 +1,14 @@
 const tickLength = 128;
-const appleMargin = 5;
 const columns = 35;
-const scoreMargin = 30;
+const scoreTextMargin = 30;
 
 let rows;
 let score = 1;
 let direction = 4;
 let tempDirection = 4;
-let nextDirection = 4;
-let mouseX;
-let mouseY;
 let applePos = [0, 0];
 let snakeCoordinates = [];
-let pxPerSquare;
+let cellSize;
 let tailIndex = 1;
 let canvas;
 let ctx;
@@ -33,8 +29,12 @@ function initializeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    pxPerSquare = canvas.width / columns;
-    rows = Math.floor(canvas.height / pxPerSquare);
+    cellSize = roundToTwoDecimalPlaces(canvas.width / columns);
+    rows = Math.floor(canvas.height / cellSize);
+}
+
+function roundToTwoDecimalPlaces(number) {
+    return Math.round(number * 100) / 100;
 }
 
 function initializeGame() {
@@ -136,7 +136,7 @@ function update() {
 
 function isOverlapping() {
     overlapping = false;
-    const cells = getOccupiedCells(scoreMargin, scoreMargin, textDimensions[0], textDimensions[1], pxPerSquare);
+    const cells = getOccupiedCells(scoreTextMargin, scoreTextMargin, textDimensions[0], textDimensions[1], cellSize);
 
     for (const cell of cells) {
         if (snakeCoordinates.some((coord) => isEqual(coord, cell)) || isEqual(applePos, cell)) {
@@ -237,11 +237,11 @@ function checkForApple() {
 function drawFrame() {
     clearCanvas();
     drawScore();
-    drawSquare("red", applePos, appleMargin);
+    drawSquare("red", applePos);
 
     for (let i = 0; i < snakeCoordinates.length; i++) {
         const color = (i === 0) ? "#00FF00" : "#008000";
-        drawSquare(color, snakeCoordinates[i], 0);
+        drawSquare(color, snakeCoordinates[i]);
     }
 
     drawStrokeRect();
@@ -254,25 +254,22 @@ function drawScore() {
     ctx.fillStyle = "rgba(255, 255, 255, " + opacity + ")";
     const textMetrics = ctx.measureText(text);
     const textHeight = textMetrics.actualBoundingBoxAscent + textMetrics.actualBoundingBoxDescent;
-    ctx.fillText(text, scoreMargin, scoreMargin + textHeight);
-    textDimensions = [textMetrics.width, textHeight];
+    ctx.fillText(text, scoreTextMargin, scoreTextMargin + textHeight);
+    textDimensions = [roundToTwoDecimalPlaces(textMetrics.width), textHeight];
 }
 
 function drawStrokeRect() {
     const line = 4;
     ctx.lineWidth = line;
     ctx.strokeStyle = "mediumslateblue";
-    ctx.strokeRect(line / 2, line / 2, pxPerSquare * columns - line, rows * pxPerSquare - line + 1);
+    ctx.strokeRect(line / 2, line / 2, cellSize * columns - line, rows * cellSize - line + 1);
 }
 
-function drawSquare(color, pos, margin) {
-    const x = pxPerSquare * pos[0] + margin;
-    const y = pxPerSquare * pos[1] + margin;
-    const width = pxPerSquare - margin * 2 + 1;
-    const height = pxPerSquare - margin * 2 + 1;
-
+function drawSquare(color, pos) {
+    const x = cellSize * pos[0];
+    const y = cellSize * pos[1];
     ctx.fillStyle = color;
-    ctx.fillRect(x, y, width, height);
+    ctx.fillRect(x, y, cellSize + 1, cellSize + 1);
 }
 
 function clearCanvas() {
