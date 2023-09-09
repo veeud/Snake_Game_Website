@@ -8,6 +8,8 @@ let score = 1;
 let direction = 4;
 let tempDirection = 4;
 let nextDirection = 4;
+let mouseX;
+let mouseY;
 let applePos = [0, 0];
 let snakeCoordinates = [];
 let pxPerSquare;
@@ -21,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeCanvas();
     initializeGame();
     detectKeyPress();
-    setInterval(tick, tickLength);
+    setInterval(update, tickLength);
 });
 
 function initializeCanvas() {
@@ -39,6 +41,59 @@ function initializeGame() {
     const startPos = [Math.round(columns / 3 - 1), Math.round(rows / 2 - 1)];
     snakeCoordinates.push(startPos);
     applePos = getNewApplePos();
+
+    detectMouseAndTouch();
+
+    function detectMouseAndTouch() {
+        let startX, startY;
+
+        //For checking desktop (click) swiping gestures
+        canvas.addEventListener('mousedown', (e) => {
+            startX = e.clientX;
+            startY = e.clientY;
+        });
+        canvas.addEventListener('mouseup', (e) => {
+            const endX = e.clientX;
+            const endY = e.clientY;
+            detectSwipeDirection(startX, startY, endX, endY);
+        });
+
+        //For checking mobile (touch) swiping gestures
+        canvas.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+        canvas.addEventListener('touchend', (e) => {
+            const endX = e.changedTouches[0].clientX;
+            const endY = e.changedTouches[0].clientY;
+            detectSwipeDirection(startX, startY, endX, endY);
+        });
+
+        function detectSwipeDirection(startX, startY, endX, endY) {
+            const deltaX = endX - startX;
+            const deltaY = endY - startY;
+
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (deltaX > 0) {
+                    updateDirection(4);
+                }
+                else
+                {
+                    updateDirection(2);
+                }
+            }
+            else {
+                if (deltaY > 0) {
+                    updateDirection(3);
+                }
+                else {
+                    updateDirection(1);
+                }
+            }
+        }
+    }
+
+    
 }
 
 function detectKeyPress() {
@@ -46,13 +101,13 @@ function detectKeyPress() {
         const key = event.key.toLowerCase();
 
         if (key === "w" || key === "arrowup") {
-            updateDirection(1);
+            updateDirection(1, true);
         } else if (key === "a" || key === "arrowleft") {
-            updateDirection(2);
+            updateDirection(2, true);
         } else if (key === "s" || key === "arrowdown") {
-            updateDirection(3);
+            updateDirection(3, true);
         } else if (key === "d" || key === "arrowright") {
-            updateDirection(4);
+            updateDirection(4, true);
         }
     });
 }
@@ -61,6 +116,7 @@ function updateDirection(newDirection) {
     if (newDirection !== oppositeDirection(direction)) {
         tempDirection = newDirection;
     }
+    return newDirection != direction
 }
 
 function oppositeDirection(dir) {
@@ -68,9 +124,6 @@ function oppositeDirection(dir) {
     return opposites[dir] || dir;
 }
 
-function tick() {
-    update();
-}
 
 function update() {
     direction = tempDirection;
