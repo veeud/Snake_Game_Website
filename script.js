@@ -9,7 +9,6 @@ let applePos = [0, 0]
 let snakeCoordinates = []
 let pxPerSquare
 let tailIndex = 1
-
 let canvas
 let ctx
 
