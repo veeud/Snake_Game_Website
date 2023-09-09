@@ -14,12 +14,16 @@ let canvas;
 let ctx;
 let textDimensions = [0, 0];
 let overlapping = false;
+let appleSound = new Audio("apple.mp3")
+let deathSound = new Audio("death.mp3")
+
 
 document.addEventListener("DOMContentLoaded", () => {
     initializeCanvas();
     initializeGame();
     detectKeyPress();
     setInterval(update, tickLength);
+
 });
 
 function initializeCanvas() {
@@ -41,7 +45,6 @@ function initializeGame() {
     const startPos = [Math.round(columns / 3 - 1), Math.round(rows / 2 - 1)];
     snakeCoordinates.push(startPos);
     applePos = getNewApplePos();
-
     detectMouseAndTouch();
 
     function detectMouseAndTouch() {
@@ -169,6 +172,7 @@ function getOccupiedCells(x, y, width, height, size) {
 function checkForEnd() {
 
     if (hasDuplicates(snakeCoordinates)) {
+        deathSound.play()
         reset()
     }
     else if (snakeCoordinates.length == columns * rows) {
@@ -228,6 +232,7 @@ function updatePos() {
 
 function checkForApple() {
     if (isEqual(snakeCoordinates[0], applePos)) {
+        appleSound.play();
         snakeCoordinates.splice(tailIndex + 1, 0, applePos);
         applePos = getNewApplePos();
         score++;
